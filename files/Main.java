@@ -4,6 +4,7 @@ import java.time.LocalDate;
 public class Main {
     public static void main(String[] args) {
         Main app = new Main();
+        app.cargarDatosIniciales();
         app.mostrarMenuPrincipal();
     }
 
@@ -15,6 +16,26 @@ public class Main {
         this.sistema = new SistemaConsultas();
     }
 
+    private void cargarDatosIniciales() {
+        // Agregar algunos votantes de ejemplo
+        sistema.agregarVotante(new Votante("12345678-9", "Juan Pérez", 30, "Calle 123"));
+        sistema.agregarVotante(new Votante("98765432-1", "María González", 25, "Avenida 456"));
+
+        ConsultaCiudadana consulta1 = new ConsultaCiudadana("Consulta Ambiental",
+                LocalDate.of(2024, 6, 15), "Consulta sobre temas medioambientales");
+
+        Tema tema1 = new Tema("Contaminación", "Medidas contra la contaminación");
+        tema1.agregarPregunta(new Pregunta("¿Está a favor de prohibir plásticos de un solo uso?", "Si/No"));
+        tema1.agregarPregunta(new Pregunta("¿Apoya el uso de energías renovables?", "Si/No"));
+
+        Tema tema2 = new Tema("Transporte", "Mejoras en el transporte público");
+        tema2.agregarPregunta(new Pregunta("¿Está de acuerdo con aumentar impuestos a vehículos contaminantes?", "Si/No"));
+
+        consulta1.agregarTema(tema1);
+        consulta1.agregarTema(tema2);
+
+        sistema.agregarConsulta(consulta1);
+    }
 
     private void mostrarMenuPrincipal() {
         int opcion;
@@ -129,7 +150,7 @@ public class Main {
 
         Votante votante = new Votante(rut, nombre, edad, direccion);
         sistema.agregarVotante(votante);
-        System.out.println("Votante agregado exitosamente.");
+        System.out.println("Votante agregado exitosamente");
     }
 
     private void agregarConsulta() {
@@ -137,25 +158,23 @@ public class Main {
         String nombre = scanner.nextLine();
         System.out.print("Descripción: ");
         String descripcion = scanner.nextLine();
-        System.out.print("year: ");
-        int Anio = scanner.nextInt();
+        System.out.print("Año: ");
+        int año = scanner.nextInt();
         System.out.print("Mes: ");
         int mes = scanner.nextInt();
         System.out.print("Día: ");
         int dia = scanner.nextInt();
         scanner.nextLine();
 
-        ConsultaCiudadana consulta = new ConsultaCiudadana(nombre, LocalDate.of(Anio,mes,dia), descripcion);
+        ConsultaCiudadana consulta = new ConsultaCiudadana(nombre,
+                LocalDate.of(año, mes, dia), descripcion);
         sistema.agregarConsulta(consulta);
-        System.out.println("Consulta agregada exitosamente.");
+        System.out.println("Consulta agregada exitosamente");
     }
 
     private void agregarTemaAConsulta() {
         sistema.mostrarConsultas();
-
-        if (sistema.getConsultas().isEmpty()) {
-            return;
-        }
+        if (sistema.getConsultas().isEmpty()) return;
 
         System.out.print("Seleccione el número de la consulta: ");
         int index = scanner.nextInt() - 1;
@@ -163,23 +182,21 @@ public class Main {
 
         if (index >= 0 && index < sistema.getConsultas().size()) {
             System.out.print("Nombre del tema: ");
-            String nombreTema = scanner.nextLine();
+            String nombre = scanner.nextLine();
             System.out.print("Descripción del tema: ");
-            String descripcionTema = scanner.nextLine();
+            String descripcion = scanner.nextLine();
 
-            Tema tema = new Tema(nombreTema, descripcionTema);
+            Tema tema = new Tema(nombre, descripcion);
             sistema.getConsultas().get(index).agregarTema(tema);
-            System.out.println("Tema agregado exitosamente.");
+            System.out.println("Tema agregado exitosamente");
         } else {
-            System.out.println("Consulta no válida.");
+            System.out.println("Consulta no válida");
         }
     }
 
     private void agregarPreguntaATema() {
         sistema.mostrarConsultas();
-        if (sistema.getConsultas().isEmpty()) {
-            return;
-        }
+        if (sistema.getConsultas().isEmpty()) return;
 
         System.out.print("Seleccione el número de la consulta: ");
         int consultaIndex = scanner.nextInt() - 1;
@@ -189,9 +206,7 @@ public class Main {
             ConsultaCiudadana consulta = sistema.getConsultas().get(consultaIndex);
             consulta.mostrarTemas();
 
-            if (consulta.getTemas().isEmpty()) {
-                return;
-            }
+            if (consulta.getTemas().isEmpty()) return;
 
             System.out.print("Seleccione el número del tema: ");
             int temaIndex = scanner.nextInt() - 1;
@@ -199,26 +214,24 @@ public class Main {
 
             if (temaIndex >= 0 && temaIndex < consulta.getTemas().size()) {
                 System.out.print("Texto de la pregunta: ");
-                String textoPregunta = scanner.nextLine();
+                String texto = scanner.nextLine();
                 System.out.print("Tipo de respuesta: ");
                 String tipoRespuesta = scanner.nextLine();
 
-                Pregunta pregunta = new Pregunta(textoPregunta, tipoRespuesta);
+                Pregunta pregunta = new Pregunta(texto, tipoRespuesta);
                 consulta.getTemas().get(temaIndex).agregarPregunta(pregunta);
-                System.out.println("Pregunta agregada exitosamente.");
+                System.out.println("Pregunta agregada exitosamente");
             } else {
-                System.out.println("Tema no válido.");
+                System.out.println("Tema no válido");
             }
         } else {
-            System.out.println("Consulta no válida.");
+            System.out.println("Consulta no válida");
         }
     }
 
     private void registrarVoto() {
         sistema.mostrarVotantes();
-        if (sistema.getVotantes().isEmpty()) {
-            return;
-        }
+        if (sistema.getVotantes().isEmpty()) return;
 
         System.out.print("Seleccione el número del votante: ");
         int votanteIndex = scanner.nextInt() - 1;
@@ -226,14 +239,38 @@ public class Main {
 
         if (votanteIndex >= 0 && votanteIndex < sistema.getVotantes().size()) {
             Votante votante = sistema.getVotantes().get(votanteIndex);
-            System.out.println("Votante seleccionado: " + votante.getNombre());
 
-            Map<String, String> respuestas = new HashMap<>();
-            respuestas.put("voto_simulado", "sí");
-            sistema.registrarVoto(votante.getRut(), respuestas);
-            System.out.println("Voto registrado exitosamente.");
+            sistema.mostrarConsultas();
+            if (sistema.getConsultas().isEmpty()) return;
+
+            System.out.print("Seleccione el número de la consulta: ");
+            int consultaIndex = scanner.nextInt() - 1;
+            scanner.nextLine();
+
+            if (consultaIndex >= 0 && consultaIndex < sistema.getConsultas().size()) {
+                ConsultaCiudadana consulta = sistema.getConsultas().get(consultaIndex);
+
+                System.out.println("Registrando votos para: " + consulta.getNombre());
+                Map<String, String> respuestas = new HashMap<>();
+
+                for (Tema tema : consulta.getTemas()) {
+                    System.out.println("\nTema: " + tema.getNombre());
+                    for (Pregunta pregunta : tema.getPreguntas()) {
+                        System.out.println("Pregunta: " + pregunta.getTexto());
+                        System.out.print("Respuesta (" + pregunta.getTipoRespuesta() + "): ");
+                        String respuesta = scanner.nextLine();
+                        String clave = consulta.getNombre() + "|" + tema.getNombre() + "|" + pregunta.getTexto();
+                        respuestas.put(clave, respuesta);
+                    }
+                }
+
+                sistema.registrarVoto(votante.getRut(), respuestas);
+                System.out.println("Voto registrado exitosamente");
+            } else {
+                System.out.println("Consulta no válida");
+            }
         } else {
-            System.out.println("Votante no válido.");
+            System.out.println("Votante no válido");
         }
     }
 
