@@ -15,6 +15,7 @@ public class Main {
         this.sistema = new SistemaConsultas();
     }
 
+
     private void mostrarMenuPrincipal() {
         int opcion;
         do {
@@ -116,26 +117,126 @@ public class Main {
     }
 
     private void agregarVotante() {
-        System.out.println("Funcionalidad no implementada en este commit");
+        System.out.print("RUT: ");
+        String rut = scanner.nextLine();
+        System.out.print("Nombre: ");
+        String nombre = scanner.nextLine();
+        System.out.print("Edad: ");
+        int edad = scanner.nextInt();
+        scanner.nextLine();
+        System.out.print("Dirección: ");
+        String direccion = scanner.nextLine();
+
+        Votante votante = new Votante(rut, nombre, edad, direccion);
+        sistema.agregarVotante(votante);
+        System.out.println("Votante agregado exitosamente.");
     }
 
     private void agregarConsulta() {
-        System.out.println("Funcionalidad no implementada en este commit");
+        System.out.print("Nombre de la consulta: ");
+        String nombre = scanner.nextLine();
+        System.out.print("Descripción: ");
+        String descripcion = scanner.nextLine();
+        System.out.print("Año: ");
+        int año = scanner.nextInt();
+        System.out.print("Mes: ");
+        int mes = scanner.nextInt();
+        System.out.print("Día: ");
+        int dia = scanner.nextInt();
+        scanner.nextLine();
+
+        ConsultaCiudadana consulta = new ConsultaCiudadana(nombre, LocalDate.of(año,mes,dia), descripcion);
+        sistema.agregarConsulta(consulta);
+        System.out.println("Consulta agregada exitosamente.");
     }
 
     private void agregarTemaAConsulta() {
-        System.out.println("Funcionalidad no implementada en este commit");
+        sistema.mostrarConsultas();
+
+        if (sistema.getConsultas().isEmpty()) {
+            return;
+        }
+
+        System.out.print("Seleccione el número de la consulta: ");
+        int index = scanner.nextInt() - 1;
+        scanner.nextLine();
+
+        if (index >= 0 && index < sistema.getConsultas().size()) {
+            System.out.print("Nombre del tema: ");
+            String nombreTema = scanner.nextLine();
+            System.out.print("Descripción del tema: ");
+            String descripcionTema = scanner.nextLine();
+
+            Tema tema = new Tema(nombreTema, descripcionTema);
+            sistema.getConsultas().get(index).agregarTema(tema);
+            System.out.println("Tema agregado exitosamente.");
+        } else {
+            System.out.println("Consulta no válida.");
+        }
     }
 
     private void agregarPreguntaATema() {
-        System.out.println("Funcionalidad no implementada en este commit");
+        sistema.mostrarConsultas();
+        if (sistema.getConsultas().isEmpty()) {
+            return;
+        }
+
+        system.out.print("Seleccione el número de la consulta: ");
+        int consultaIndex = scanner.nextInt() - 1;
+        scanner.nextLine();
+
+        if (consultaIndex >= 0 && consultaIndex < sistema.getConsultas().size()) {
+            ConsultaCiudadana consulta = sistema.getConsultas().get(consultaIndex);
+            consulta.mostrarTemas();
+
+            if (consulta.getTemas().isEmpty()) {
+                return;
+            }
+
+            System.out.print("Seleccione el número del tema: ");
+            int temaIndex = scanner.nextInt() - 1;
+            scanner.nextLine();
+
+            if (temaIndex >= 0 && temaIndex < consulta.getTemas().size()) {
+                System.out.print("Texto de la pregunta: ");
+                String textoPregunta = scanner.nextLine();
+                system.out.print("Tipo de respuesta: ");
+                String tipoRespuesta = scanner.nextLine();
+
+                Pregunta pregunta = new Pregunta(textoPregunta, tipoRespuesta);
+                consulta.getTemas().get(temaIndex).agregarPregunta(pregunta);
+                System.out.println("Pregunta agregada exitosamente.");
+            } else {
+                System.out.println("Tema no válido.");
+            }
+        } else {
+            System.out.println("Consulta no válida.");
+        }
     }
 
     private void registrarVoto() {
-        System.out.println("Funcionalidad no implementada en este commit");
-    }
+        sistema.mostrarVotantes();
+        if (sistema.getVotantes().isEmpty()) {
+            return;
+        }
+
+        system.out.print("Seleccione el número del votante: ");
+        int votanteIndex = scanner.nextInt() - 1;
+        scanner.nextLine();
+
+        if (votanteIndex >= 0 && votanteIndex < sistema.getVotantes().size()) {
+            Votante votante = sistema.getVotantes().get(votanteIndex);
+            System.out.println("Votante seleccionado: " + votante.getNombre());
+
+            Map<String, String> resouestas = new.HashMap<>();
+            respuestas.put("voto_simulado", "sí");
+            sistema.registrarVoto(votante.getRut(), respuestas);
+            system.out.println("Voto registrado exitosamente.");
+        } else {
+            System.out.println("Votante no válido.");
+        }
+}
 
     private void mostrarResultados() {
-        System.out.println("Funcionalidad no implementada en este commit");
-    }
+        sistema.mostrarResultados();
 }
