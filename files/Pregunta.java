@@ -1,4 +1,4 @@
-public class Pregunta {
+public class Pregunta { // Clase que representa una pregunta dentro de un tema de la consulta
     private String texto;
     private String tipoRespuesta;
 

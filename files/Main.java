@@ -1,45 +1,47 @@
 import java.util.*;
 import java.time.LocalDate;
 
-public class Main {
+public class Main { // Clase principal que contiene el menú y la lógica de interacción con el usuario
     public static void main(String[] args) {
-        Main app = new Main();
-        app.cargarDatosIniciales();
-        app.mostrarMenuPrincipal();
+        Main app = new Main(); // Se crea la aplicación principal
+        app.cargarDatosIniciales(); // Se cargan datos de ejemplo
+        app.mostrarMenuPrincipal(); // Se inicia el menú de interacción
     }
 
-    private Scanner scanner;
-    private SistemaConsultas sistema;
+    private Scanner scanner; // Para leer entradas de teclado
+    private SistemaConsultas sistema; // Objeto que administra votantes, consultas y votos
 
+    // Constructor: inicializa el scanner y el sistema
     public Main() {
         this.scanner = new Scanner(System.in);
         this.sistema = new SistemaConsultas();
     }
-
+    // Método que agrega datos de prueba al sistema (votantes, consultas, temas y preguntas)
     private void cargarDatosIniciales() {
-        // Agregar algunos votantes de ejemplo
+        // Votantes de ejemplo
         sistema.agregarVotante(new Votante("12345678-9", "Juan Pérez", 30, "Calle 123"));
         sistema.agregarVotante(new Votante("98765432-1", "María González", 25, "Avenida 456"));
-
+        // Crear una consulta ciudadana de ejemplo
         ConsultaCiudadana consulta1 = new ConsultaCiudadana("Consulta Ambiental",
                 LocalDate.of(2024, 6, 15), "Consulta sobre temas medioambientales");
-
+        // Crear un tema con preguntas
         Tema tema1 = new Tema("Contaminación", "Medidas contra la contaminación");
         tema1.agregarPregunta(new Pregunta("¿Está a favor de prohibir plásticos de un solo uso?", "Si/No"));
         tema1.agregarPregunta(new Pregunta("¿Apoya el uso de energías renovables?", "Si/No"));
-
+        // Otro tema con una pregunta
         Tema tema2 = new Tema("Transporte", "Mejoras en el transporte público");
         tema2.agregarPregunta(new Pregunta("¿Está de acuerdo con aumentar impuestos a vehículos contaminantes?", "Si/No"));
-
+        // Se agregan los temas a la consulta
         consulta1.agregarTema(tema1);
         consulta1.agregarTema(tema2);
-
+        // Se agrega la consulta al sistema
         sistema.agregarConsulta(consulta1);
     }
-
+    // ----------- MENÚ PRINCIPAL -----------
     private void mostrarMenuPrincipal() {
         int opcion;
-        do {
+        do {    
+            // Menú de opciones
             System.out.println("\n=== SISTEMA DE CONSULTAS CIUDADANAS ===");
             System.out.println("1. Gestión de Votantes");
             System.out.println("2. Gestión de Consultas y Temas");
@@ -49,8 +51,9 @@ public class Main {
             System.out.print("Seleccione una opción: ");
 
             opcion = scanner.nextInt();
-            scanner.nextLine();
+            scanner.nextLine(); // Consumir salto de línea
 
+            // Se redirige según la opción elegida
             switch (opcion) {
                 case 1:
                     gestionarVotantes();
@@ -70,9 +73,9 @@ public class Main {
                 default:
                     System.out.println("Opción no válida");
             }
-        } while (opcion != 5);
+        } while (opcion != 5); // Se repite hasta que el usuario elija salir
     }
-
+    // ----------- MENÚ DE GESTIÓN DE VOTANTES -----------
     private void gestionarVotantes() {
         int opcion;
         do {
@@ -100,7 +103,7 @@ public class Main {
             }
         } while (opcion != 3);
     }
-
+    // ----------- MENÚ DE GESTIÓN DE CONSULTAS Y TEMAS -----------
     private void gestionarConsultas() {
         int opcion;
         do {
@@ -136,7 +139,9 @@ public class Main {
             }
         } while (opcion != 5);
     }
+    // ----------- MÉTODOS DE APOYO -----------
 
+    // Agrega un votante pidiendo datos al usuario
     private void agregarVotante() {
         System.out.print("RUT: ");
         String rut = scanner.nextLine();
@@ -152,7 +157,7 @@ public class Main {
         sistema.agregarVotante(votante);
         System.out.println("Votante agregado exitosamente");
     }
-
+    // Agrega una consulta nueva
     private void agregarConsulta() {
         System.out.print("Nombre de la consulta: ");
         String nombre = scanner.nextLine();
@@ -171,7 +176,7 @@ public class Main {
         sistema.agregarConsulta(consulta);
         System.out.println("Consulta agregada exitosamente");
     }
-
+    // Agrega un tema a una consulta seleccionada
     private void agregarTemaAConsulta() {
         sistema.mostrarConsultas();
         if (sistema.getConsultas().isEmpty()) return;
@@ -193,7 +198,7 @@ public class Main {
             System.out.println("Consulta no válida");
         }
     }
-
+    // Agrega una pregunta a un tema dentro de una consulta
     private void agregarPreguntaATema() {
         sistema.mostrarConsultas();
         if (sistema.getConsultas().isEmpty()) return;
@@ -228,7 +233,7 @@ public class Main {
             System.out.println("Consulta no válida");
         }
     }
-
+    // Permite registrar un voto de un votante en una consulta
     private void registrarVoto() {
         sistema.mostrarVotantes();
         if (sistema.getVotantes().isEmpty()) return;
@@ -252,18 +257,19 @@ public class Main {
 
                 System.out.println("Registrando votos para: " + consulta.getNombre());
                 Map<String, String> respuestas = new HashMap<>();
-
+                // Itera sobre cada tema y pregunta, solicitando respuestas
                 for (Tema tema : consulta.getTemas()) {
                     System.out.println("\nTema: " + tema.getNombre());
                     for (Pregunta pregunta : tema.getPreguntas()) {
                         System.out.println("Pregunta: " + pregunta.getTexto());
                         System.out.print("Respuesta (" + pregunta.getTipoRespuesta() + "): ");
                         String respuesta = scanner.nextLine();
+                        // Clave única: consulta|tema|pregunta
                         String clave = consulta.getNombre() + "|" + tema.getNombre() + "|" + pregunta.getTexto();
                         respuestas.put(clave, respuesta);
                     }
                 }
-
+                // Registra el voto en el sistema
                 sistema.registrarVoto(votante.getRut(), respuestas);
                 System.out.println("Voto registrado exitosamente");
             } else {
@@ -273,7 +279,7 @@ public class Main {
             System.out.println("Votante no válido");
         }
     }
-
+    // Muestra los resultados de las votaciones
     private void mostrarResultados() {
         sistema.mostrarResultados();
     }
