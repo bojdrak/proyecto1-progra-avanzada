@@ -13,7 +13,7 @@ public class ConsultaCiudadana {
         this.nombre = nombre;
         this.fecha = fecha;
         this.descripcion = descripcion;
-        List<tema> temas = new ArrayList<>();
+        List<Tema> temas = new ArrayList<>();
     }
 
     public void agregarTema(Tema tema) {
@@ -21,7 +21,7 @@ public class ConsultaCiudadana {
     }
 
     public void agregarTema(String nombre, String descripcion) {
-        temas.add(new tema(nombre, descripcion));
+        temas.add(new Tema(nombre, descripcion));
     }
 
     public String getNombre() { 
@@ -33,7 +33,7 @@ public class ConsultaCiudadana {
     }
 
     public void mostrarTemas() {
-        system.out.println("Consulta:" + nombre);
+        System.out.println("Consulta:" + nombre);
         for (int i = 0; i < temas.size(); i++) {
             System.out.println((i + 1) + ". " + temas.get(i));
         }

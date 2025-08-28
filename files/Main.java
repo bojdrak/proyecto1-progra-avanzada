@@ -137,15 +137,15 @@ public class Main {
         String nombre = scanner.nextLine();
         System.out.print("Descripción: ");
         String descripcion = scanner.nextLine();
-        System.out.print("Año: ");
-        int año = scanner.nextInt();
+        System.out.print("year: ");
+        int Anio = scanner.nextInt();
         System.out.print("Mes: ");
         int mes = scanner.nextInt();
         System.out.print("Día: ");
         int dia = scanner.nextInt();
         scanner.nextLine();
 
-        ConsultaCiudadana consulta = new ConsultaCiudadana(nombre, LocalDate.of(año,mes,dia), descripcion);
+        ConsultaCiudadana consulta = new ConsultaCiudadana(nombre, LocalDate.of(Anio,mes,dia), descripcion);
         sistema.agregarConsulta(consulta);
         System.out.println("Consulta agregada exitosamente.");
     }
@@ -181,7 +181,7 @@ public class Main {
             return;
         }
 
-        system.out.print("Seleccione el número de la consulta: ");
+        System.out.print("Seleccione el número de la consulta: ");
         int consultaIndex = scanner.nextInt() - 1;
         scanner.nextLine();
 
@@ -200,7 +200,7 @@ public class Main {
             if (temaIndex >= 0 && temaIndex < consulta.getTemas().size()) {
                 System.out.print("Texto de la pregunta: ");
                 String textoPregunta = scanner.nextLine();
-                system.out.print("Tipo de respuesta: ");
+                System.out.print("Tipo de respuesta: ");
                 String tipoRespuesta = scanner.nextLine();
 
                 Pregunta pregunta = new Pregunta(textoPregunta, tipoRespuesta);
@@ -220,7 +220,7 @@ public class Main {
             return;
         }
 
-        system.out.print("Seleccione el número del votante: ");
+        System.out.print("Seleccione el número del votante: ");
         int votanteIndex = scanner.nextInt() - 1;
         scanner.nextLine();
 
@@ -228,15 +228,16 @@ public class Main {
             Votante votante = sistema.getVotantes().get(votanteIndex);
             System.out.println("Votante seleccionado: " + votante.getNombre());
 
-            Map<String, String> resouestas = new.HashMap<>();
+            Map<String, String> respuestas = new HashMap<>();
             respuestas.put("voto_simulado", "sí");
             sistema.registrarVoto(votante.getRut(), respuestas);
-            system.out.println("Voto registrado exitosamente.");
+            System.out.println("Voto registrado exitosamente.");
         } else {
             System.out.println("Votante no válido.");
         }
-}
+    }
 
     private void mostrarResultados() {
         sistema.mostrarResultados();
+    }
 }
