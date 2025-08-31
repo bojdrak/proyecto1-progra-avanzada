@@ -142,7 +142,7 @@ public class Main { // Clase principal que contiene el menu y la logica de inter
         System.out.print("Descripción: ");
         String descripcion = scanner.nextLine();
         System.out.print("Año: ");
-        int año = scanner.nextInt();
+        int ano = scanner.nextInt();
         System.out.print("Mes: ");
         int mes = scanner.nextInt();
         System.out.print("Día: ");
@@ -150,7 +150,7 @@ public class Main { // Clase principal que contiene el menu y la logica de inter
         scanner.nextLine();
 
         ConsultaCiudadana consulta = new ConsultaCiudadana(nombre,
-                LocalDate.of(año, mes, dia), descripcion);
+                LocalDate.of(ano, mes, dia), descripcion);
         sistema.agregarConsulta(consulta);
         System.out.println("Consulta agregada exitosamente");
     }
