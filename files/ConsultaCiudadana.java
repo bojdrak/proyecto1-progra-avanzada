@@ -6,16 +6,16 @@ public class ConsultaCiudadana { // Clase principal que representa una consulta 
     // Atributos privados de la consulta
     private String nombre; // Nombre de la consulta
     private LocalDate fecha; // Fecha en que se realiza
-    private String descripcion; // Breve explicación de la consulta
+    private String descripcion; // Breve explicacion de la consulta
     private List<Tema> temas; // Lista de temas asociados a la consulta
 
     public ConsultaCiudadana(String nombre, LocalDate fecha, String descripcion) { // Constructor: inicializa los valores y la lista de temas
         this.nombre = nombre;
         this.fecha = fecha;
         this.descripcion = descripcion;
-        this.temas = new ArrayList<>(); // Se crea la lista vacía de temas
+        this.temas = new ArrayList<>(); // Se crea la lista vacia de temas
     }
-    // -------- MÉTODOS SOBRECARGADOS PARA AGREGAR TEMAS --------
+    // -------- METODOS SOBRECARGADOS PARA AGREGAR TEMAS --------
     
     // Agrega un tema ya creado (objeto de tipo Tema)
     public void agregarTema(Tema tema) {
@@ -39,7 +39,7 @@ public class ConsultaCiudadana { // Clase principal que representa una consulta 
     public List<Tema> getTemas() { return temas; }
     public void setTemas(List<Tema> temas) { this.temas = temas; }
 
-    // -------- MÉTODOS DE UTILIDAD --------
+    // -------- METODOS DE UTILIDAD --------
     public void mostrarTemas() {
         System.out.println("Consulta: " + nombre);
         for (int i = 0; i < temas.size(); i++) {

@@ -1,4 +1,4 @@
-public class Votante {
+ public class Votante {
     private String rut;
     private String nombre;
     private int edad;

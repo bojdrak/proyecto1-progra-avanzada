@@ -1,10 +1,9 @@
 import java.util.*;
 import java.time.LocalDate;
 
-public class Main { // Clase principal que contiene el menú y la lógica de interacción con el usuario
+public class Main { // Clase principal que contiene el menu y la logica de interacción con el usuario
     public static void main(String[] args) {
         Main app = new Main(); // Se crea la aplicación principal
-        app.cargarDatosIniciales(); // Se cargan datos de ejemplo
         app.mostrarMenuPrincipal(); // Se inicia el menú de interacción
     }
 
@@ -16,28 +15,7 @@ public class Main { // Clase principal que contiene el menú y la lógica de int
         this.scanner = new Scanner(System.in);
         this.sistema = new SistemaConsultas();
     }
-    // Método que agrega datos de prueba al sistema (votantes, consultas, temas y preguntas)
-    private void cargarDatosIniciales() {
-        // Votantes de ejemplo
-        sistema.agregarVotante(new Votante("12345678-9", "Juan Pérez", 30, "Calle 123"));
-        sistema.agregarVotante(new Votante("98765432-1", "María González", 25, "Avenida 456"));
-        // Crear una consulta ciudadana de ejemplo
-        ConsultaCiudadana consulta1 = new ConsultaCiudadana("Consulta Ambiental",
-                LocalDate.of(2024, 6, 15), "Consulta sobre temas medioambientales");
-        // Crear un tema con preguntas
-        Tema tema1 = new Tema("Contaminación", "Medidas contra la contaminación");
-        tema1.agregarPregunta(new Pregunta("¿Está a favor de prohibir plásticos de un solo uso?", "Si/No"));
-        tema1.agregarPregunta(new Pregunta("¿Apoya el uso de energías renovables?", "Si/No"));
-        // Otro tema con una pregunta
-        Tema tema2 = new Tema("Transporte", "Mejoras en el transporte público");
-        tema2.agregarPregunta(new Pregunta("¿Está de acuerdo con aumentar impuestos a vehículos contaminantes?", "Si/No"));
-        // Se agregan los temas a la consulta
-        consulta1.agregarTema(tema1);
-        consulta1.agregarTema(tema2);
-        // Se agrega la consulta al sistema
-        sistema.agregarConsulta(consulta1);
-    }
-    // ----------- MENÚ PRINCIPAL -----------
+    // ----------- MENU PRINCIPAL -----------
     private void mostrarMenuPrincipal() {
         int opcion;
         do {    
@@ -51,9 +29,9 @@ public class Main { // Clase principal que contiene el menú y la lógica de int
             System.out.print("Seleccione una opción: ");
 
             opcion = scanner.nextInt();
-            scanner.nextLine(); // Consumir salto de línea
+            scanner.nextLine(); // Consumir salto de linea
 
-            // Se redirige según la opción elegida
+            // Se redirige según la opcion elegida
             switch (opcion) {
                 case 1:
                     gestionarVotantes();
@@ -75,7 +53,7 @@ public class Main { // Clase principal que contiene el menú y la lógica de int
             }
         } while (opcion != 5); // Se repite hasta que el usuario elija salir
     }
-    // ----------- MENÚ DE GESTIÓN DE VOTANTES -----------
+    // ----------- MENU DE GESTION DE VOTANTES -----------
     private void gestionarVotantes() {
         int opcion;
         do {
@@ -103,7 +81,7 @@ public class Main { // Clase principal que contiene el menú y la lógica de int
             }
         } while (opcion != 3);
     }
-    // ----------- MENÚ DE GESTIÓN DE CONSULTAS Y TEMAS -----------
+    // ----------- MENU DE GESTION DE CONSULTAS Y TEMAS -----------
     private void gestionarConsultas() {
         int opcion;
         do {
@@ -139,7 +117,7 @@ public class Main { // Clase principal que contiene el menú y la lógica de int
             }
         } while (opcion != 5);
     }
-    // ----------- MÉTODOS DE APOYO -----------
+    // ----------- METODOS DE APOYO -----------
 
     // Agrega un votante pidiendo datos al usuario
     private void agregarVotante() {
@@ -264,7 +242,7 @@ public class Main { // Clase principal que contiene el menú y la lógica de int
                         System.out.println("Pregunta: " + pregunta.getTexto());
                         System.out.print("Respuesta (" + pregunta.getTipoRespuesta() + "): ");
                         String respuesta = scanner.nextLine();
-                        // Clave única: consulta|tema|pregunta
+                        // Clave unica: consulta|tema|pregunta
                         String clave = consulta.getNombre() + "|" + tema.getNombre() + "|" + pregunta.getTexto();
                         respuestas.put(clave, respuesta);
                     }
