@@ -1,4 +1,10 @@
-public class Pregunta { // Clase que representa una pregunta dentro de un tema de la consulta
+package sistema;
+
+import java.io.Serializable;
+
+public class Pregunta implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private String texto;
     private String tipoRespuesta;
 
@@ -7,7 +13,7 @@ public class Pregunta { // Clase que representa una pregunta dentro de un tema d
         this.tipoRespuesta = tipoRespuesta;
     }
 
-    // Getters y Setters
+    // Getters y Setters (mantener igual)
     public String getTexto() { return texto; }
     public void setTexto(String texto) { this.texto = texto; }
 

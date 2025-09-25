@@ -1,32 +1,35 @@
+package sistema;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.io.Serializable;
 
-public class ConsultaCiudadana { // Clase principal que representa una consulta ciudadana
-    // Atributos privados de la consulta
-    private String nombre; // Nombre de la consulta
-    private LocalDate fecha; // Fecha en que se realiza
-    private String descripcion; // Breve explicacion de la consulta
-    private List<Tema> temas; // Lista de temas asociados a la consulta
+public class ConsultaCiudadana implements Serializable {
+    private static final long serialVersionUID = 1L;
 
-    public ConsultaCiudadana(String nombre, LocalDate fecha, String descripcion) { // Constructor: inicializa los valores y la lista de temas
+    private String nombre;
+    private LocalDate fecha;
+    private String descripcion;
+    private List<Tema> temas;
+
+    public ConsultaCiudadana(String nombre, LocalDate fecha, String descripcion) {
         this.nombre = nombre;
         this.fecha = fecha;
         this.descripcion = descripcion;
-        this.temas = new ArrayList<>(); // Se crea la lista vacia de temas
+        this.temas = new ArrayList<>();
     }
-    // -------- METODOS SOBRECARGADOS PARA AGREGAR TEMAS --------
-    
-    // Agrega un tema ya creado (objeto de tipo Tema)
+
+    // Métodos sobrecargados
     public void agregarTema(Tema tema) {
         temas.add(tema);
     }
-    // Crea un tema nuevo a partir de nombre y descripción, y lo agrega
+
     public void agregarTema(String nombre, String descripcion) {
         temas.add(new Tema(nombre, descripcion));
     }
 
-    // -------- GETTERS Y SETTERS --------
+    // Getters y Setters
     public String getNombre() { return nombre; }
     public void setNombre(String nombre) { this.nombre = nombre; }
 
@@ -39,17 +42,15 @@ public class ConsultaCiudadana { // Clase principal que representa una consulta 
     public List<Tema> getTemas() { return temas; }
     public void setTemas(List<Tema> temas) { this.temas = temas; }
 
-    // -------- METODOS DE UTILIDAD --------
     public void mostrarTemas() {
         System.out.println("Consulta: " + nombre);
         for (int i = 0; i < temas.size(); i++) {
             System.out.println((i + 1) + ". " + temas.get(i));
         }
     }
-    // Representación en texto de la consulta (sobrescribe toString)
+
     @Override
     public String toString() {
-        return "Consulta{" + "nombre=" + nombre + ", fecha=" + fecha +
-                ", descripcion=" + descripcion + ", temas=" + temas.size() + "}";
+        return "Consulta{nombre=" + nombre + ", fecha=" + fecha + ", descripcion=" + descripcion + ", temas=" + temas.size() + "}";
     }
 }

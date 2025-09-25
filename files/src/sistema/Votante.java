@@ -1,4 +1,10 @@
- public class Votante {
+package sistema;
+
+import java.io.Serializable;
+
+public class Votante implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private String rut;
     private String nombre;
     private int edad;
@@ -11,7 +17,7 @@
         this.direccion = direccion;
     }
 
-    // Getters y Setters
+    // Getters y Setters (mantener igual)
     public String getRut() { return rut; }
     public void setRut(String rut) { this.rut = rut; }
 
@@ -26,7 +32,6 @@
 
     @Override
     public String toString() {
-        return "Votante{" + "rut=" + rut + ", nombre=" + nombre +
-                ", edad=" + edad + ", direccion=" + direccion + '}';
+        return "Votante{rut=" + rut + ", nombre=" + nombre + ", edad=" + edad + ", direccion=" + direccion + '}';
     }
 }

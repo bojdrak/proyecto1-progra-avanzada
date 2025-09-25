@@ -1,7 +1,12 @@
+package sistema;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.io.Serializable;
 
-public class Tema {
+public class Tema implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private String nombre;
     private String descripcion;
     private List<Pregunta> preguntas;
@@ -40,7 +45,6 @@ public class Tema {
 
     @Override
     public String toString() {
-        return "Tema{" + "nombre=" + nombre + ", descripcion=" + descripcion +
-                ", preguntas=" + preguntas.size() + "}";
+        return "Tema{nombre=" + nombre + ", descripcion=" + descripcion + ", preguntas=" + preguntas.size() + "}";
     }
 }

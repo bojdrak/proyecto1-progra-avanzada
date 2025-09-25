@@ -1,0 +1,51 @@
+@startuml
+class Votante {
+  - String rut
+  - String nombre
+  - int edad
+  - String direccion
+  + getters/setters()
+}
+
+class ConsultaCiudadana {
+  - String nombre
+  - LocalDate fecha
+  - String descripcion
+  - List<Tema> temas
+  + agregarTema()
+  + mostrarTemas()
+}
+
+class Tema {
+  - String nombre
+  - String descripcion
+  - List<Pregunta> preguntas
+  + agregarPregunta()
+  + mostrarPreguntas()
+}
+
+class Pregunta {
+  - String texto
+  - String tipoRespuesta
+}
+
+class SistemaConsultas {
+  - List<Votante> votantes
+  - List<ConsultaCiudadana> consultas
+  - Map resultados
+  + registrarVoto()
+  + mostrarResultados()
+}
+
+class Main {
+  - Scanner scanner
+  - SistemaConsultas sistema
+  + mostrarMenuPrincipal()
+}
+
+ConsultaCiudadana "1" *-- "many" Tema
+Tema "1" *-- "many" Pregunta
+SistemaConsultas "1" *-- "many" Votante
+SistemaConsultas "1" *-- "many" ConsultaCiudadana
+Main --> SistemaConsultas
+@enduml

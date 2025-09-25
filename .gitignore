@@ -3,6 +3,9 @@
 # Compiled class file
 *.class
 
+# Data files
+*.dat
+
 # Log file
 *.log
 
