@@ -85,7 +85,7 @@ public class SistemaConsultas {
         return false;
     }
 
-    // SIA2.3: Manejo de excepciones
+    // SIA2.9 y 2.8: Manejo de excepciones
     public void agregarVotante(Votante votante) throws VotanteYaExisteException, EdadInvalidaException {
         if (votante.getEdad() < 18) {
             throw new EdadInvalidaException("El votante debe ser mayor de edad.");
