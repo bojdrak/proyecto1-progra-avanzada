@@ -3,11 +3,13 @@ package sistema;
 import java.io.*;
 import java.time.LocalDate;
 import java.util.*;
+import exceptions.EdadInvalidaException;
+import exceptions.VotanteYaExisteException;
 
 public class PersistenciaDatos {
     private static final String ARCHIVO_DATOS = "datos_consultas.dat";
 
-    public static void cargarDatos(SistemaConsultas sistema) {
+    public static void cargarDatos(SistemaConsultas sistema) throws IOException, ClassNotFoundException,EdadInvalidaException, VotanteYaExisteException{
         File archivo = new File(ARCHIVO_DATOS);
 
         if (archivo.exists()) {
@@ -48,7 +50,7 @@ public class PersistenciaDatos {
     }
 
 
-    private static void crearDatosIniciales(SistemaConsultas sistema) {
+    private static void crearDatosIniciales(SistemaConsultas sistema)  throws EdadInvalidaException, VotanteYaExisteException {
         sistema.agregarVotante(new Votante("11.111.111-1", "Ana Gonzalez", 35, "Av. Principal 123, Santiago"));
         sistema.agregarVotante(new Votante("22.222.222-2", "Carlos Lopez", 42, "Calle Secundaria 456, Providencia"));
         sistema.agregarVotante(new Votante("33.333.333-3", "Maria Torres", 28, "Pasaje Central 789, Las Condes"));

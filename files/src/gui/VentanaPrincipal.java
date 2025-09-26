@@ -5,6 +5,7 @@ import java.awt.*;
 import java.util.Map;  // ← AGREGAR ESTE IMPORT
 import java.util.HashMap;  // ← AGREGAR ESTE IMPORT
 import sistema.SistemaConsultas;
+import java.io.File;
 
 public class VentanaPrincipal extends JFrame {
     private SistemaConsultas sistema;
@@ -42,12 +43,13 @@ public class VentanaPrincipal extends JFrame {
         JPanel panelBotones = new JPanel(new GridLayout(7, 1, 10, 10));
         panelBotones.setBorder(BorderFactory.createEmptyBorder(50, 100, 50, 100));
 
-        JButton btnGestionVotantes = crearBoton("Gestion de Votantes", new Color(70, 130, 180));
+        JButton btnGestionVotantes = crearBoton("Gestion de Votantes", new Color(100, 149, 237));
         JButton btnGestionConsultas = crearBoton("Gestion de Consultas", new Color(60, 179, 113));
-        JButton btnRegistrarVoto = crearBoton("Registrar Voto", new Color(205, 133, 63));
+        JButton btnRegistrarVoto = crearBoton("Registrar Voto", new Color(210, 105, 30));
         JButton btnMostrarResultados = crearBoton("Mostrar Resultados", new Color(186, 85, 211));
-        JButton btnEstadisticas = crearBoton("Estadisticas", new Color(106, 90, 205));
-        JButton btnFiltrarVotantes = crearBoton("Filtrar Votantes", new Color(60, 179, 113));
+        JButton btnEstadisticas = crearBoton("Estadisticas", new Color(72, 61, 139));
+        JButton btnFiltrarVotantes = crearBoton("Filtrar Votantes", new Color(46, 139, 87));
+        JButton btnGenerarReporte = crearBoton("Generar Reporte CSV", new Color(218, 165, 32));
         JButton btnSalir = crearBoton("Salir", new Color(220, 20, 60));
 
         btnGestionVotantes.addActionListener(e -> new VentanaGestionVotantes(sistema).setVisible(true));
@@ -56,6 +58,17 @@ public class VentanaPrincipal extends JFrame {
         btnMostrarResultados.addActionListener(e -> new VentanaResultados(sistema).setVisible(true));
         btnEstadisticas.addActionListener(e -> mostrarEstadisticas());
         btnFiltrarVotantes.addActionListener(e -> new VentanaFiltrarVotantes(sistema).setVisible(true));
+        btnGenerarReporte.addActionListener(e -> {
+            JFileChooser fc = new JFileChooser();
+            fc.setSelectedFile(new File("reporte_votantes.csv"));
+            int r = fc.showSaveDialog(this);
+            if (r == JFileChooser.APPROVE_OPTION) {
+                String ruta = fc.getSelectedFile().getAbsolutePath();
+                sistema.generarReporteVotantes(ruta);
+                JOptionPane.showMessageDialog(this, "Reporte generado en:\n" + ruta,"Éxito", JOptionPane.INFORMATION_MESSAGE);
+            }
+        });
+
         btnSalir.addActionListener(e -> guardarYSalir());
 
         panelBotones.add(btnGestionVotantes);
@@ -64,6 +77,7 @@ public class VentanaPrincipal extends JFrame {
         panelBotones.add(btnMostrarResultados);
         panelBotones.add(btnEstadisticas);
         panelBotones.add(btnFiltrarVotantes);
+        panelBotones.add(btnGenerarReporte);
         panelBotones.add(btnSalir);
 
         add(panelBotones, BorderLayout.CENTER);

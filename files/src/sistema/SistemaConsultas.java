@@ -1,6 +1,11 @@
 package sistema;
 
 import java.util.*;
+import java.io.FileWriter;
+import java.io.IOException;
+
+import exceptions.EdadInvalidaException;
+import exceptions.VotanteYaExisteException;
 
 public class SistemaConsultas {
     private List<Votante> votantes;
@@ -11,7 +16,12 @@ public class SistemaConsultas {
         this.votantes = new ArrayList<>();
         this.consultas = new ArrayList<>();
         this.resultados = new HashMap<>();
-        PersistenciaDatos.cargarDatos(this);
+
+        try {
+            PersistenciaDatos.cargarDatos(this);
+        } catch (IOException | ClassNotFoundException | EdadInvalidaException | VotanteYaExisteException e) {
+            System.out.println("[Sistema] Error al cargar datos: " + e.getMessage());
+        }
     }
 
     public void guardarDatos() {
@@ -75,8 +85,18 @@ public class SistemaConsultas {
         return false;
     }
 
-    // Metodos existentes
-    public void agregarVotante(Votante votante) { votantes.add(votante); }
+    // SIA2.3: Manejo de excepciones
+    public void agregarVotante(Votante votante) throws VotanteYaExisteException, EdadInvalidaException {
+        if (votante.getEdad() < 18) {
+            throw new EdadInvalidaException("El votante debe ser mayor de edad.");
+        }
+        for (Votante existente : votantes) {
+            if (existente.getRut().equals(votante.getRut())) {
+                throw new VotanteYaExisteException("El votante con RUT " + votante.getRut() + " ya existe.");
+            }
+        }
+        votantes.add(votante); 
+    }
     public void agregarConsulta(ConsultaCiudadana consulta) { consultas.add(consulta); }
 
     public List<Votante> getVotantes() { return votantes; }
@@ -144,4 +164,20 @@ public class SistemaConsultas {
             }
         }
     }
+    
+    // SIA2.5: Generar reporte CSV
+    public void generarReporteVotantes(String nombreArchivo){
+        try (FileWriter writer = new FileWriter(nombreArchivo)) {
+            writer.write("RUT,Nombre,Edad,Direccion\n");
+            //filas de votantes
+           for (Votante votante : votantes) {
+               writer.write(votante.getRut() + "," + votante.getNombre() + "," + votante.getEdad() + "," + votante.getDireccion() + "\n");
+            }
+            writer.flush();
+            System.out.println("Reporte de votantes generado: " + nombreArchivo);
+        } catch (IOException e) {
+            System.out.println("Error al generar el reporte de votantes: " + e.getMessage());
+        }
+    }
 }
+

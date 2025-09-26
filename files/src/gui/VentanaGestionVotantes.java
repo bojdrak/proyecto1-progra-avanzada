@@ -6,6 +6,8 @@ import java.awt.*;
 import java.awt.event.*;
 import sistema.SistemaConsultas;
 import sistema.Votante;
+import exceptions.EdadInvalidaException;
+import exceptions.VotanteYaExisteException;
 
 public class VentanaGestionVotantes extends JFrame {
     private SistemaConsultas sistema;
@@ -93,7 +95,7 @@ public class VentanaGestionVotantes extends JFrame {
 
         int resultado = JOptionPane.showConfirmDialog(this, panel,
                 "Agregar Votante", JOptionPane.OK_CANCEL_OPTION);
-
+        // aqui se manejan las excepciones SIA 2.9
         if (resultado == JOptionPane.OK_OPTION) {
             try {
                 Votante votante = new Votante(
@@ -104,10 +106,13 @@ public class VentanaGestionVotantes extends JFrame {
                 );
                 sistema.agregarVotante(votante);
                 actualizarTabla();
+            
                 JOptionPane.showMessageDialog(this, "Votante agregado exitosamente");
             } catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(this, "Error: La edad debe ser un numero",
                         "Error", JOptionPane.ERROR_MESSAGE);
+            } catch (EdadInvalidaException | VotanteYaExisteException ex) {
+                JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
     }
