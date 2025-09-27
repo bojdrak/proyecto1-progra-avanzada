@@ -50,9 +50,11 @@ public class VentanaPrincipal extends JFrame {
         JButton btnEstadisticas = crearBoton("Estadisticas", new Color(72, 61, 139));
         JButton btnFiltrarVotantes = crearBoton("Filtrar Votantes", new Color(46, 139, 87));
         JButton btnGenerarReporte = crearBoton("Generar Reporte CSV", new Color(218, 165, 32));
+        JButton btnBuscar = crearBoton("Buscar", new Color(70, 130, 180));
         JButton btnSalir = crearBoton("Salir", new Color(220, 20, 60));
 
         btnGestionVotantes.addActionListener(e -> new VentanaGestionVotantes(sistema).setVisible(true));
+        btnBuscar.addActionListener(e -> new VentanaBuscarElemento(sistema).setVisible(true));
         btnGestionConsultas.addActionListener(e -> new VentanaGestionConsultas(sistema).setVisible(true));
         btnRegistrarVoto.addActionListener(e -> new VentanaRegistrarVoto(sistema).setVisible(true));
         btnMostrarResultados.addActionListener(e -> new VentanaResultados(sistema).setVisible(true));
@@ -77,6 +79,7 @@ public class VentanaPrincipal extends JFrame {
         panelBotones.add(btnMostrarResultados);
         panelBotones.add(btnEstadisticas);
         panelBotones.add(btnFiltrarVotantes);
+        panelBotones.add(btnBuscar);
         panelBotones.add(btnGenerarReporte);
         panelBotones.add(btnSalir);
 
