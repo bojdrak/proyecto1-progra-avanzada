@@ -74,7 +74,7 @@ public class PersistenciaDatos {
         sistema.agregarVotante(new Votante("44.444.444-4", "Juan Perez", 55, "Av. Forestal 321, Nunoa"));
         sistema.agregarVotante(new Votante("55.555.555-5", "Laura Silva", 31, "Calle Nueva 654, Maipu"));
 
-        ConsultaCiudadana consulta1 = new ConsultaCiudadana("Consulta de Desarrollo Urbano 2024", LocalDate.of(2024, 6, 15), "Consulta sobre mejoras urbanisticas en la comuna");
+        ConsultaCiudadana consulta1 = new ConsultaCiudadana("Consulta de Desarrollo Urbano 2025", LocalDate.of(2025, 6, 15), "Consulta sobre mejoras urbanisticas en la comuna");
 
         Tema temaTransporte = new Tema("Transporte Publico", "Mejoras al sistema de transporte");
         temaTransporte.agregarPregunta("Esta satisfecho con la frecuencia de buses?", "Si/No");
@@ -88,7 +88,7 @@ public class PersistenciaDatos {
         consulta1.agregarTema(temaAreasVerdes);
         sistema.agregarConsulta(consulta1);
 
-        ConsultaCiudadana consulta2 = new ConsultaCiudadana("Consulta Educacional 2024", LocalDate.of(2024, 7, 1), "Evaluacion de necesidades educativas en la comuna");
+        ConsultaCiudadana consulta2 = new ConsultaCiudadana("Consulta Educacional 2025", LocalDate.of(2025, 7, 1), "Evaluacion de necesidades educativas en la comuna");
 
         Tema temaEducacion = new Tema("Infraestructura Escolar", "Condiciones de establecimientos");
         temaEducacion.agregarPregunta("Considera adecuadas las escuelas de su sector?", "Si/No");
