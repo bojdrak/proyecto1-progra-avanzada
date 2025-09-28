@@ -11,21 +11,43 @@ public class SistemaConsultas {
     private List<Votante> votantes;
     private List<ConsultaCiudadana> consultas;
     private Map<String, Map<String, Map<String, List<String>>>> resultados;
+    private Map<String, Set<String>> votacionesPorConsulta; // Control de votación por consulta
 
     public SistemaConsultas() {
         this.votantes = new ArrayList<>();
         this.consultas = new ArrayList<>();
         this.resultados = new HashMap<>();
+        this.votacionesPorConsulta = new HashMap<>(); // Inicializar el control por consulta
 
         try {
             PersistenciaDatos.cargarDatos(this);
-        } catch (IOException | ClassNotFoundException | EdadInvalidaException | VotanteYaExisteException e) {
+        } catch (Exception e) {
             System.out.println("[Sistema] Error al cargar datos: " + e.getMessage());
         }
     }
 
     public void guardarDatos() {
         PersistenciaDatos.guardarDatos(this);
+    }
+
+    public boolean rutYaVotoEnConsulta(String rut, String nombreConsulta) {
+        if (!votacionesPorConsulta.containsKey(nombreConsulta)) {
+            return false; // Nadie ha votado en esta consulta aún
+        }
+        return votacionesPorConsulta.get(nombreConsulta).contains(rut);
+    }
+
+    // Método para obtener consultas disponibles para un RUT (donde no haya votado)
+    public List<ConsultaCiudadana> getConsultasDisponiblesParaVotante(String rut) {
+        List<ConsultaCiudadana> consultasDisponibles = new ArrayList<>();
+
+        for (ConsultaCiudadana consulta : consultas) {
+            // Solo agregar consultas donde este RUT NO haya votado
+            if (!rutYaVotoEnConsulta(rut, consulta.getNombre())) {
+                consultasDisponibles.add(consulta);
+            }
+        }
+        return consultasDisponibles;
     }
 
     // SIA2.5: Filtrar votantes
@@ -95,13 +117,83 @@ public class SistemaConsultas {
                 throw new VotanteYaExisteException("El votante con RUT " + votante.getRut() + " ya existe.");
             }
         }
-        votantes.add(votante); 
+        votantes.add(votante);
     }
-    public void agregarConsulta(ConsultaCiudadana consulta) { consultas.add(consulta); }
+
+    public void agregarConsulta(ConsultaCiudadana consulta) {
+        consultas.add(consulta);
+    }
 
     public List<Votante> getVotantes() { return votantes; }
     public List<ConsultaCiudadana> getConsultas() { return consultas; }
     public Map<String, Map<String, Map<String, List<String>>>> getResultados() { return resultados; }
+
+    // Método para verificar si un RUT ya votó en ALGUNA consulta
+    public boolean rutYaVoto(String rut) {
+        // Un RUT ha votado si ha votado en ALGUNA consulta
+        for (Set<String> ruts : votacionesPorConsulta.values()) {
+            if (ruts.contains(rut)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // Método registrarVoto con control de votación por consulta
+    public void registrarVoto(String rutVotante, Map<String, String> respuestas) {
+        if (respuestas.isEmpty()) {
+            throw new IllegalArgumentException("No hay respuestas para registrar");
+        }
+
+        // Obtener el nombre de la consulta desde la primera respuesta
+        String primeraClave = respuestas.keySet().iterator().next();
+        String nombreConsulta = primeraClave.split("\\|")[0];
+
+        // Validar que el RUT no haya votado en ESTA consulta específica
+        if (rutYaVotoEnConsulta(rutVotante, nombreConsulta)) {
+            throw new IllegalStateException("El RUT " + rutVotante + " ya ha votado en la consulta: " + nombreConsulta);
+        }
+
+        // Validar que el RUT exista en el sistema
+        boolean rutExiste = false;
+        for (Votante votante : votantes) {
+            if (votante.getRut().equals(rutVotante)) {
+                rutExiste = true;
+                break;
+            }
+        }
+
+        if (!rutExiste) {
+            throw new IllegalArgumentException("El RUT " + rutVotante + " no está registrado en el sistema.");
+        }
+
+        // Registrar las respuestas
+        for (Map.Entry<String, String> entry : respuestas.entrySet()) {
+            String[] partes = entry.getKey().split("\\|");
+            String consulta = partes[0];
+            String tema = partes[1];
+            String pregunta = partes[2];
+            String respuesta = entry.getValue();
+
+            resultados.putIfAbsent(consulta, new HashMap<>());
+            resultados.get(consulta).putIfAbsent(tema, new HashMap<>());
+            resultados.get(consulta).get(tema).putIfAbsent(pregunta, new ArrayList<>());
+            resultados.get(consulta).get(tema).get(pregunta).add(respuesta);
+        }
+
+        // Marcar el RUT como que ya votó en ESTA consulta específica
+        votacionesPorConsulta.putIfAbsent(nombreConsulta, new HashSet<>());
+        votacionesPorConsulta.get(nombreConsulta).add(rutVotante);
+    }
+
+    // Getters y Setters para el control de votación por consulta
+    public Map<String, Set<String>> getVotacionesPorConsulta() {
+        return votacionesPorConsulta;
+    }
+
+    public void setVotacionesPorConsulta(Map<String, Set<String>> votacionesPorConsulta) {
+        this.votacionesPorConsulta = votacionesPorConsulta;
+    }
 
     public void mostrarVotantes() {
         System.out.println("\n=== LISTA DE VOTANTES ===");
@@ -125,53 +217,13 @@ public class SistemaConsultas {
         }
     }
 
-    public void registrarVoto(String rutVotante, Map<String, String> respuestas) {
-        for (Map.Entry<String, String> entry : respuestas.entrySet()) {
-            String[] partes = entry.getKey().split("\\|");
-            String consulta = partes[0];
-            String tema = partes[1];
-            String pregunta = partes[2];
-            String respuesta = entry.getValue();
-
-            resultados.putIfAbsent(consulta, new HashMap<>());
-            resultados.get(consulta).putIfAbsent(tema, new HashMap<>());
-            resultados.get(consulta).get(tema).putIfAbsent(pregunta, new ArrayList<>());
-            resultados.get(consulta).get(tema).get(pregunta).add(respuesta);
-        }
-    }
-
-    public void mostrarResultados() {
-        System.out.println("\n=== RESULTADOS AGREGADOS ===");
-        if (resultados.isEmpty()) {
-            System.out.println("No hay votos registrados aun.");
-            return;
-        }
-
-        for (Map.Entry<String, Map<String, Map<String, List<String>>>> consultaEntry : resultados.entrySet()) {
-            System.out.println("\nCONSULTA: " + consultaEntry.getKey());
-            for (Map.Entry<String, Map<String, List<String>>> temaEntry : consultaEntry.getValue().entrySet()) {
-                System.out.println("\n  TEMA: " + temaEntry.getKey());
-                for (Map.Entry<String, List<String>> preguntaEntry : temaEntry.getValue().entrySet()) {
-                    System.out.println("    PREGUNTA: " + preguntaEntry.getKey());
-                    Map<String, Integer> conteo = new HashMap<>();
-                    for (String respuesta : preguntaEntry.getValue()) {
-                        conteo.put(respuesta, conteo.getOrDefault(respuesta, 0) + 1);
-                    }
-                    for (Map.Entry<String, Integer> resultado : conteo.entrySet()) {
-                        System.out.println("      " + resultado.getKey() + ": " + resultado.getValue() + " votos");
-                    }
-                }
-            }
-        }
-    }
-    
-    // SIA2.5: Generar reporte CSV
-    public void generarReporteVotantes(String nombreArchivo){
+    // SIA2.10: Generar reporte CSV
+    public void generarReporteVotantes(String nombreArchivo) {
         try (FileWriter writer = new FileWriter(nombreArchivo)) {
             writer.write("RUT,Nombre,Edad,Direccion\n");
-            //filas de votantes
-           for (Votante votante : votantes) {
-               writer.write(votante.getRut() + "," + votante.getNombre() + "," + votante.getEdad() + "," + votante.getDireccion() + "\n");
+            for (Votante votante : votantes) {
+                writer.write(votante.getRut() + "," + votante.getNombre() + "," +
+                        votante.getEdad() + "," + votante.getDireccion() + "\n");
             }
             writer.flush();
             System.out.println("Reporte de votantes generado: " + nombreArchivo);
@@ -179,5 +231,36 @@ public class SistemaConsultas {
             System.out.println("Error al generar el reporte de votantes: " + e.getMessage());
         }
     }
-}
 
+    public void exportarResultados(String nombreArchivo) {
+        try (FileWriter writer = new FileWriter(nombreArchivo)) {
+            writer.write("Resultados de Consultas Ciudadanas\n");
+            writer.write("==================================\n\n");
+
+            for (Map.Entry<String, Map<String, Map<String, List<String>>>> consultaEntry : resultados.entrySet()) {
+                writer.write("Consulta: " + consultaEntry.getKey() + "\n");
+
+                for (Map.Entry<String, Map<String, List<String>>> temaEntry : consultaEntry.getValue().entrySet()) {
+                    writer.write("  Tema: " + temaEntry.getKey() + "\n");
+
+                    for (Map.Entry<String, List<String>> preguntaEntry : temaEntry.getValue().entrySet()) {
+                        writer.write("    Pregunta: " + preguntaEntry.getKey() + "\n");
+
+                        Map<String, Integer> conteo = new HashMap<>();
+                        for (String respuesta : preguntaEntry.getValue()) {
+                            conteo.put(respuesta, conteo.getOrDefault(respuesta, 0) + 1);
+                        }
+
+                        for (Map.Entry<String, Integer> resultado : conteo.entrySet()) {
+                            writer.write("      " + resultado.getKey() + ": " + resultado.getValue() + " votos\n");
+                        }
+                        writer.write("\n");
+                    }
+                }
+                writer.write("\n");
+            }
+        } catch (IOException e) {
+            System.out.println("Error al exportar resultados: " + e.getMessage());
+        }
+    }
+}

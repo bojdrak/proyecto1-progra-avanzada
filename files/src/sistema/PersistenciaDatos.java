@@ -3,26 +3,41 @@ package sistema;
 import java.io.*;
 import java.time.LocalDate;
 import java.util.*;
+
 import exceptions.EdadInvalidaException;
 import exceptions.VotanteYaExisteException;
 
 public class PersistenciaDatos {
     private static final String ARCHIVO_DATOS = "datos_consultas.dat";
 
-    public static void cargarDatos(SistemaConsultas sistema) throws IOException, ClassNotFoundException,EdadInvalidaException, VotanteYaExisteException{
+    public static void cargarDatos(SistemaConsultas sistema) throws IOException, ClassNotFoundException, EdadInvalidaException, VotanteYaExisteException {
         File archivo = new File(ARCHIVO_DATOS);
 
         if (archivo.exists()) {
             try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(archivo))) {
+                // Cargar votantes
                 @SuppressWarnings("unchecked")
                 List<Votante> votantes = (List<Votante>) ois.readObject();
                 sistema.getVotantes().clear();
                 sistema.getVotantes().addAll(votantes);
 
+                // Cargar consultas
                 @SuppressWarnings("unchecked")
                 List<ConsultaCiudadana> consultas = (List<ConsultaCiudadana>) ois.readObject();
                 sistema.getConsultas().clear();
                 sistema.getConsultas().addAll(consultas);
+
+                // Cargar resultados de votación
+                @SuppressWarnings("unchecked")
+                Map<String, Map<String, Map<String, List<String>>>> resultados =
+                        (Map<String, Map<String, Map<String, List<String>>>>) ois.readObject();
+                sistema.getResultados().clear();
+                sistema.getResultados().putAll(resultados);
+
+                // Cargar control de votación POR CONSULTA (NUEVO)
+                @SuppressWarnings("unchecked")
+                Map<String, Set<String>> votacionesPorConsulta = (Map<String, Set<String>>) ois.readObject();
+                sistema.setVotacionesPorConsulta(votacionesPorConsulta);
 
                 System.out.println("Datos cargados exitosamente desde " + ARCHIVO_DATOS);
 
@@ -41,6 +56,9 @@ public class PersistenciaDatos {
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(ARCHIVO_DATOS))) {
             oos.writeObject(sistema.getVotantes());
             oos.writeObject(sistema.getConsultas());
+            oos.writeObject(sistema.getResultados());
+            oos.writeObject(sistema.getVotacionesPorConsulta()); // NUEVO: guardar control por consulta
+
             System.out.println("Datos guardados exitosamente en " + ARCHIVO_DATOS);
 
         } catch (IOException e) {
@@ -48,7 +66,6 @@ public class PersistenciaDatos {
             e.printStackTrace();
         }
     }
-
 
     private static void crearDatosIniciales(SistemaConsultas sistema)  throws EdadInvalidaException, VotanteYaExisteException {
         sistema.agregarVotante(new Votante("11.111.111-1", "Ana Gonzalez", 35, "Av. Principal 123, Santiago"));
